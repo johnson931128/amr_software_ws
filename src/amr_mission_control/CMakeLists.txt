@@ -31,7 +31,13 @@ install(TARGETS
   DESTINATION lib/${PROJECT_NAME}
 )
 
+add_executable(square_tester src/square_tester.cpp)
+ament_target_dependencies(square_tester rclcpp geometry_msgs)
 
+install(TARGETS
+  square_tester
+  DESTINATION lib/${PROJECT_NAME}
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
