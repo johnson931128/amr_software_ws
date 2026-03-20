@@ -66,7 +66,18 @@
 | **CMake 編譯失敗** | `can't find '/.../meshes'` | 專案採純幾何建模，未建立 `meshes` 3D 模型資料夾，觸發 CMake 安裝路徑嚴格檢查。 | 執行 `mkdir -p meshes` 建立空資料夾滿足編譯器規則。 |
 | **編譯器失憶** | 找不到 `ament_cmake` | 新開啟的 WSL 2 終端機分頁未載入 ROS 2 環境變數。 | 手動執行 `source /opt/ros/jazzy/setup.bash`，並寫入 `.bashrc`。 |
 | **車體接收不到指令** | C++ 程式狂跑，但車子原地不動 | ROS 2 Jazzy 與 Gazebo Harmonic 之間的 Topic 協定不互通。 | 啟動 `ros_gz_bridge parameter_bridge`，轉譯 `geometry_msgs/msg/Twist` 至 `gz.msgs.Twist`。 |
+| **編譯快取污染** | `ModuleNotFoundError: No module named 'ament_package'` | 在未載入 ROS 2 環境變數（未 source）的狀態下不慎執行了 `colcon build`，導致 CMake 將錯誤的環境狀態寫入系統快取。即使後續補上 source，編譯器仍會讀取錯誤快取而持續罷工。 | 執行大清洗 `rm -rf build/ install/ log/`，徹底移除受污染的快取資料夾，重新 `source /opt/ros/jazzy/setup.bash` 後再次編譯即可完美解決。這凸顯了 ROS 2 開發中環境變數與底層 CMake 建置系統之間高度依賴的關係。 |
+
 
 ---
 **⏭️ Next Step (Week 2)**：
 在車體前方掛載 RPLIDAR A1M8 雷達模型，並導入感測器外掛。在 WSL 2 中開啟 RViz2，觀察雷達點雲數據，驗證 TF (Transform) 座標變換樹是否正確對接。
+
+
+
+
+
+
+
+
+
