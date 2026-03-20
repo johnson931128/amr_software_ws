@@ -1,51 +1,72 @@
 # Project AMR: 軟硬體解耦自主移動機器人 - Week 1 開發紀錄
 
-## 本週核心目標
-建立 ROS 2 基礎工作區，完成「模擬先行 (Sim-to-Real)」的第一階段：
-1. **數位孿生建置**：完成阿克曼轉向底盤的參數化建模 (URDF/Xacro)。
-2. **大腦決策層打底**：以現代 C++ (C++11) 實作高內聚、低耦合的跨樓層任務狀態機與排程器。
-
-## 開發環境
-* **OS**: Ubuntu 24.04
-* **Middleware**: ROS 2 Jazzy
-* **Language**: C++, Python, XML/Xacro
-* **Tools**: Vim, CMake, Git, RViz2
-
-## 實作進度
-
-### 1. 車體物理建模 (amr_description)
-* 使用 `xacro:macro` 模組化設計四輪底盤，提升程式碼重用性。
-* 成功定義 `base_link` 至各輪胎 (`front_left_wheel` 等) 的 TF 轉換樹 (Transform Tree)。
-* 撰寫 Python Launch 腳本，自動解析 Xacro 並一鍵啟動 `robot_state_publisher` 與 `rviz2` (支援自動載入 .rviz 設定檔)。
-
-### 2. 任務決策層大腦 (amr_mission_control)
-* **強型別狀態機**：使用 C++ `enum class` 嚴格管控 AMR 狀態 (IDLE, NAV_TO_ELEVATOR, ENTER_ELEVATOR 等)，避免傳統整數狀態造成的型別不安全問題。
-* **任務排程器 (Waypoint Scheduler)**：導入 C++ STL 容器 `std::queue<Point2D>`，模擬遊戲 AI 的 NPC 巡邏邏輯，實現非同步的座標點派發與消化機制。
-* **Game Loop 概念**：透過 `rclcpp::TimerBase` 設定 2 秒週期的狀態更新迴圈。
-
-## 踩坑與除錯紀錄 (Troubleshooting)
-
-1. **缺漏 Xacro 解析套件**
-   * *報錯*：`Could not find a package configuration file provided by "xacro"`
-   * *解法*：系統底層未安裝該套件，執行 `sudo apt install ros-jazzy-xacro` 後重新編譯。
-2. **RViz2 無法渲染輪子 (TF 斷層)**
-   * *報錯*：`No transform from [front_left_wheel] to [base_link]`
-   * *解法*：因為關節屬性為 `continuous`，在未連接實體編碼器前，需在 Launch 檔加入 `joint_state_publisher_gui` 來模擬輪胎旋轉的 Joint States。
-3. **Git Commit 身分驗證失敗**
-   * *報錯*：`Author identity unknown`
-   * *解法*：使用 `git config --global user.email` 與 `user.name` 補齊全域簽名設定後再次 Commit。
-
-## 📝 常用指令備忘錄 (Commands Cheat Sheet)
-
-* **編譯並建立軟連結 (修改 Python/URDF 免重編譯)**：
-  `colcon build --symlink-install`
-* **僅編譯特定 C++ 套件**：
-  `colcon build --packages-select amr_mission_control`
-* **載入環境變數**：
-  `source install/setup.bash`
-* **啟動車體視覺化與大腦節點**：
-  `ros2 launch amr_description display.launch.py`
-  `ros2 run amr_mission_control state_machine_node`
+**開發者：** Johnson
+**日期：** 2026-03-20
+**專案目標：** 建立 ROS 2 基礎工作區，完成「模擬先行 (Sim-to-Real)」的第一階段，實現差速底盤建模與 C++ 開迴路控制。
 
 ---
-**Next Step (Week 2)**：為車體模型加上 `<collision>` (碰撞邊界) 與 `<inertial>` (質量慣性)，並將數位孿生推進 Gazebo 物理引擎，測試鍵盤遙控與重力反應。
+
+## 🎯 1. 專題進度與架構安排 (Project Planning)
+
+### 1.1 軟硬體解耦架構 (Service-Oriented Architecture)
+本專題嚴格遵守「大腦（邏輯）」與「小腦/身體（演算法與物理實體）」解耦的原則：
+* **大腦層 (C++)**：純粹的狀態機 (State Machine)，負責發布任務、監控狀態，絕不處理底層運動學公式。
+* **物理層 (Gazebo)**：負責重力、碰撞與馬達模擬。
+* **通訊層 (ROS 2)**：大腦與實體間透過 `Topic` (連續控制)、`Action` (長耗時任務)、`Service` (瞬間請求) 進行非同步通訊。
+
+### 1.2 實機部署硬體策略 (Sim-to-Real Strategy)
+針對實驗室的硬體限制（Raspberry Pi 3/4），制定以下資源榨乾策略：
+* **放棄高耗能視覺 SLAM**：改採輕量級 2D LiDAR SLAM (`slam_toolbox`)。
+* **記憶體極限微調**：目標使用 8GB RAM 的 Pi 4。若僅有 4GB 版本，將採用 **Headless Mode (無圖形介面)**，捨棄 Nav2 大禮包，僅單點安裝核心 `costmap` 與 `planner` 節點，並調降全域地圖解析度。
+
+---
+
+## 🛠️ 2. 開發環境建置與轉移 (Environment Setup)
+
+### 2.1 逃離 VirtualBox，擁抱 WSL 2
+* **痛點**：VirtualBox 無法直通 GPU，導致最新版 Gazebo Harmonic 的 3D 渲染引擎 (Ogre2) 因缺乏 OpenGL 硬體加速而呈現「全黑畫面 (Black Screen)」。
+* **解決方案**：全面遷移至 **Windows Subsystem for Linux (WSL 2)**。
+* **當前環境**：
+  * **OS**: Ubuntu 24.04 (Noble)
+  * **Middleware**: ROS 2 Jazzy
+  * **Simulator**: Gazebo Harmonic
+  * **硬體加速**: 成功調用本機 NVIDIA GeForce RTX 5060 Ti，RTF (Real Time Factor) 穩定保持在 1.0。
+
+### 2.2 多機開發的 SSH 與 Git 管理
+因 GitHub 棄用密碼驗證，於 WSL 2 中重新生成 `ed25519` SSH 金鑰並綁定 GitHub，實現專案從 VirtualBox 到 WSL 2 的無縫 `git clone` 轉移。
+
+---
+
+## 🚀 3. 核心實作內容 (Core Implementations)
+
+### 3.1 差速驅動車體建模 (`amr_base.xacro`)
+放棄複雜的阿克曼轉向，改採機動性最強的「差速驅動 (Differential Drive)」：
+* **物理屬性 (Inertia & Collision)**：建立 `inertial_macros.xacro` 物理公式庫，賦予車身 (5kg) 與輪胎 (0.5kg) 真實質量與碰撞邊界。
+* **Gazebo Harmonic 外掛**：植入新版 `gz-sim-diff-drive-system` 外掛，監聽 `/cmd_vel`。
+
+### 3.2 C++ 決策大腦 (`square_tester.cpp`)
+撰寫測試節點，驗證大腦對底盤的開迴路控制（走正方形）：
+* 引入 `<geometry_msgs/msg/twist.hpp>`，封裝線速度 (`linear.x`) 與角速度 (`angular.z`)。
+* 實作 `rclcpp::TimerBase`，以 10Hz (100ms) 頻率更新狀態機 (3秒直走、2秒轉彎90度)。
+
+### 3.3 全自動化啟動檔 (`gazebo.launch.py`)
+整合四個核心節點，實現一鍵啟動：
+1. `robot_state_publisher`: 解析 Xacro 並廣播 TF 座標樹。
+2. `ros_gz_sim`: 啟動 Gazebo Harmonic 物理引擎。
+3. `create`: 將 AMR 模型生成至 3D 世界中。
+4. **`ros_gz_bridge` (關鍵)**：自動搭起 ROS 2 與 Gazebo 之間的通訊橋樑。
+
+---
+
+## 🐛 4. 踩坑與除錯紀錄 (Troubleshooting)
+
+| 遭遇問題 | 錯誤訊息 / 症狀 | 根本原因 | 解決方案 |
+| :--- | :--- | :--- | :--- |
+| **套件找不到** | `has no installation candidate` | 誤用舊版 Gazebo Classic 套件名稱 (`gazebo-ros-pkgs`)。 | 改安裝新版 Harmonic 專用橋接套件：`ros-jazzy-ros-gz`。 |
+| **CMake 編譯失敗** | `can't find '/.../meshes'` | 專案採純幾何建模，未建立 `meshes` 3D 模型資料夾，觸發 CMake 安裝路徑嚴格檢查。 | 執行 `mkdir -p meshes` 建立空資料夾滿足編譯器規則。 |
+| **編譯器失憶** | 找不到 `ament_cmake` | 新開啟的 WSL 2 終端機分頁未載入 ROS 2 環境變數。 | 手動執行 `source /opt/ros/jazzy/setup.bash`，並寫入 `.bashrc`。 |
+| **車體接收不到指令** | C++ 程式狂跑，但車子原地不動 | ROS 2 Jazzy 與 Gazebo Harmonic 之間的 Topic 協定不互通。 | 啟動 `ros_gz_bridge parameter_bridge`，轉譯 `geometry_msgs/msg/Twist` 至 `gz.msgs.Twist`。 |
+
+---
+**⏭️ Next Step (Week 2)**：
+在車體前方掛載 RPLIDAR A1M8 雷達模型，並導入感測器外掛。在 WSL 2 中開啟 RViz2，觀察雷達點雲數據，驗證 TF (Transform) 座標變換樹是否正確對接。
