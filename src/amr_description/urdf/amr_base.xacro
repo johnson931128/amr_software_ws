@@ -1,6 +1,13 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="amr_robot">
 
+    <gazebo>
+        <plugin filename="gz-sim-sensors-system" name="gz::sim::systems::Sensors">
+            <render_engine>ogre2</render_engine>
+        </plugin>
+    </gazebo>
+
+
     <xacro:include filename="inertial_macros.xacro" />
 
     <xacro:property name="chassis_length" value="0.4"/>
@@ -90,10 +97,17 @@
             <wheel_radius>0.05</wheel_radius>
             <odom_publish_frequency>30</odom_publish_frequency>
             <topic>cmd_vel</topic>
+            <odom_topic>/odom</odom_topic>
+        	<tf_topic>/tf</tf_topic>
+        	<frame_id>odom</frame_id>
+        	<child_frame_id>base_link</child_frame_id>
         </plugin>
     </gazebo>
 
 
+
+
+    <xacro:include filename="lidar.xacro" />
 
 
 </robot>

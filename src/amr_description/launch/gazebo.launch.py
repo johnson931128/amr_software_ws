@@ -20,6 +20,15 @@ def generate_launch_description():
         parameters=[robot_description, {'use_sim_time': True}]
     )
 
+    # 2.5 關節狀態發布器 (專門回報輪子角度給 RViz2)
+    jsp_node = Node(
+        package='joint_state_publisher',
+        executable='joint_state_publisher',
+        parameters=[{'use_sim_time': True}]
+    )
+
+
+
     # 3. 啟動 Gazebo Harmonic
     gazebo = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
@@ -35,12 +44,20 @@ def generate_launch_description():
         output='screen'
     )
 
-    # 5. 重點：自動搭起 cmd_vel 橋樑 (ROS 2 <-> Gazebo)
+
+	# 5. 重點：自動搭起大腦與實體世界的所有通訊橋樑
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
-        arguments=['/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist'],
+        arguments=[
+            '/clock@rosgraph_msgs/msg/Clock[gz.msgs.Clock',
+            '/cmd_vel@geometry_msgs/msg/Twist@gz.msgs.Twist',
+            '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
+            '/tf@tf2_msgs/msg/TFMessage[gz.msgs.Pose_V',
+            '/odom@nav_msgs/msg/Odometry[gz.msgs.Odometry'
+        ],
         output='screen'
     )
 
-    return LaunchDescription([rsp_node, gazebo, spawn_entity, bridge])
+
+    return LaunchDescription([rsp_node, jsp_node, gazebo, spawn_entity, bridge])
