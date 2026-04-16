@@ -110,7 +110,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_0'>
@@ -157,7 +157,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_1'>
@@ -204,7 +204,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_2'>
@@ -251,7 +251,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_3'>
@@ -298,7 +298,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_4'>
@@ -345,7 +345,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_5'>
@@ -392,7 +392,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_6'>
@@ -439,7 +439,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_7'>
@@ -486,7 +486,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_8'>
@@ -533,7 +533,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_9'>
@@ -580,7 +580,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_10'>
@@ -627,7 +627,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_13'>
@@ -674,7 +674,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_14'>
@@ -721,7 +721,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_15'>
@@ -768,7 +768,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_11'>
@@ -815,7 +815,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_16'>
@@ -862,7 +862,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_17'>
@@ -909,7 +909,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_18'>
@@ -956,7 +956,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_19'>
@@ -1003,7 +1003,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_20'>
@@ -1050,7 +1050,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_21'>
@@ -1097,7 +1097,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_12'>
@@ -1144,7 +1144,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_22'>
@@ -1191,7 +1191,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_23'>
@@ -1238,7 +1238,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_24'>
@@ -1285,7 +1285,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_25'>
@@ -1332,7 +1332,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_26'>
@@ -1379,7 +1379,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_27'>
@@ -1426,7 +1426,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_28'>
@@ -1473,7 +1473,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_29'>
@@ -1520,7 +1520,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_30'>
@@ -1567,7 +1567,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_31'>
@@ -1614,7 +1614,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_32'>
@@ -1661,7 +1661,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_33'>
@@ -1708,7 +1708,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_34'>
@@ -1755,7 +1755,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_35'>
@@ -1802,7 +1802,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_36'>
@@ -1849,7 +1849,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_37'>
@@ -1896,7 +1896,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_38'>
@@ -1943,7 +1943,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_39'>
@@ -1990,7 +1990,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_40'>
@@ -2037,7 +2037,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_41'>
@@ -2084,7 +2084,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_42'>
@@ -2131,7 +2131,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_43'>
@@ -2178,7 +2178,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_44'>
@@ -2225,7 +2225,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_45'>
@@ -2272,7 +2272,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_46'>
@@ -2319,7 +2319,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_47'>
@@ -2366,7 +2366,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_48'>
@@ -2413,7 +2413,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_49'>
@@ -2460,7 +2460,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_50'>
@@ -2507,7 +2507,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_51'>
@@ -2554,7 +2554,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_59'>
@@ -2601,7 +2601,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_60'>
@@ -2648,7 +2648,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_61'>
@@ -2695,7 +2695,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_62'>
@@ -2742,7 +2742,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_63'>
@@ -2789,7 +2789,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_64'>
@@ -2836,7 +2836,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_65'>
@@ -2883,7 +2883,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_52'>
@@ -2930,7 +2930,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_53'>
@@ -2977,7 +2977,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_54'>
@@ -3024,7 +3024,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_55'>
@@ -3071,7 +3071,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_56'>
@@ -3118,7 +3118,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_57'>
@@ -3165,7 +3165,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_58'>
@@ -3212,7 +3212,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_66'>
@@ -3259,7 +3259,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_67'>
@@ -3306,7 +3306,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <model name='box_68'>
@@ -3353,7 +3353,7 @@
         <pose>0 0 0 0 0 0</pose>
         <enable_wind>false</enable_wind>
       </link>
-      <static>false</static>
+      <static>true</static>
       <self_collide>false</self_collide>
     </model>
     <light name='sun' type='directional'>
