@@ -14,7 +14,7 @@ def generate_launch_description():
     map_yaml_file = LaunchConfiguration('map')
     declare_map_yaml_cmd = DeclareLaunchArgument(
         'map',
-        default_value=os.path.join('/home/shunjiefan/amr_ws/maps', '1f_map.yaml'), # 注意：請把"你的用戶名"換成你虛擬機的帳號！
+        default_value=os.path.join('/home/fanshunjie/amr_ws/maps', '1f_map.yaml'), # 注意：請把"你的用戶名"換成你虛擬機的帳號！
         description='Full path to map yaml file to load'
     )
 
