@@ -1,79 +1,122 @@
-#include "amr_mission_control/state_machine_node.hpp"
+#include "rclcpp/rclcpp.hpp"
+#include "rclcpp_action/rclcpp_action.hpp"       // 新增：Action 函式庫
+#include "nav2_msgs/action/navigate_to_pose.hpp" // 新增：Nav2 的 Action 型別
+#include <chrono>
+#include <string>
 
-StateMachineNode::StateMachineNode() : Node("state_machine_node"), current_state_(AmrState::IDLE) {
-    RCLCPP_INFO(this->get_logger(), "大腦決策層已啟動，準備載入巡邏路線...");
+using namespace std::chrono_literals;
 
-    // 初始化任務排程器：塞入三個巡邏點 (可以想像成實驗室的各個桌子)
-    waypoint_queue_.push({1.5, 2.0});
-    waypoint_queue_.push({3.0, -1.0});
-    waypoint_queue_.push({5.5, 0.0}); // 假設最後一個點是電梯口
+enum class AmrState {
+    WAIT_ELEVATOR,
+    NAV_TO_ELEVATOR,
+    CHANGE_FLOOR_MAP,
+    IDLE
+};
 
-    RCLCPP_INFO(this->get_logger(), "成功載入 %zu 個巡邏點。當前狀態: IDLE", waypoint_queue_.size());
+class StateMachineNode : public rclcpp::Node {
+public:
+    // Define type aliases for cleaner code
+    using NavigateToPose = nav2_msgs::action::NavigateToPose;
+    using GoalHandleNavigateToPose = rclcpp_action::ClientGoalHandle<NavigateToPose>;
 
-    timer_ = this->create_wall_timer(
-        std::chrono::seconds(2),
-        std::bind(&StateMachineNode::update_state, this));
-}
+    StateMachineNode() : Node("state_machine_node"), current_state_(AmrState::WAIT_ELEVATOR) {
+        RCLCPP_INFO(this->get_logger(), "State Machine Node initialized.");
 
-std::string StateMachineNode::state_to_string(AmrState state) {
-    switch (state) {
-        case AmrState::IDLE: return "IDLE (待機中)";
-        case AmrState::NAV_TO_WAYPOINT: return "NAV_TO_WAYPOINT (前往巡邏點)";
-        case AmrState::NAV_TO_ELEVATOR: return "NAV_TO_ELEVATOR (前往電梯)";
-        case AmrState::WAIT_ELEVATOR: return "WAIT_ELEVATOR (等待開門)";
-        case AmrState::ENTER_ELEVATOR: return "ENTER_ELEVATOR (進入電梯)";
-        case AmrState::CHANGE_FLOOR_MAP: return "CHANGE_FLOOR_MAP (切換地圖)";
-        default: return "UNKNOWN";
+        // Create the Action Client
+        nav_client_ = rclcpp_action::create_client<NavigateToPose>(this, "navigate_to_pose");
+
+        timer_ = this->create_wall_timer(2s, [this]() {
+            this->update_state();
+        });
     }
-}
 
-void StateMachineNode::update_state() {
-    switch (current_state_) {
-        case AmrState::IDLE:
-            if (!waypoint_queue_.empty()) {
-                // 取出佇列最前面的座標點
-                Point2D target = waypoint_queue_.front();
-                waypoint_queue_.pop(); // 移除已取出的點
-                
-                RCLCPP_INFO(this->get_logger(), "派發新任務！前往座標 (X: %.1f, Y: %.1f)，剩餘 %zu 個任務", target.x, target.y, waypoint_queue_.size());
-                
-                // 如果是最後一個點，假設它是電梯口
-                if (waypoint_queue_.empty()) {
-                    current_state_ = AmrState::NAV_TO_ELEVATOR;
-                } else {
-                    current_state_ = AmrState::NAV_TO_WAYPOINT;
-                }
-            } else {
-                RCLCPP_INFO(this->get_logger(), "所有巡邏任務已完成，待機中...");
-            }
-            break;
-            
-        case AmrState::NAV_TO_WAYPOINT:
-            RCLCPP_INFO(this->get_logger(), "抵達巡邏點，執行檢測任務後繼續...");
-            current_state_ = AmrState::IDLE; // 回到 IDLE 準備接取下一個點
-            break;
+private:
+    AmrState current_state_;
+    rclcpp::TimerBase::SharedPtr timer_;
+    rclcpp_action::Client<NavigateToPose>::SharedPtr nav_client_; // Action Client pointer
 
-        case AmrState::NAV_TO_ELEVATOR:
-            RCLCPP_INFO(this->get_logger(), "抵達電梯口，等待電梯...");
-            current_state_ = AmrState::WAIT_ELEVATOR;
-            break;
-
-        case AmrState::WAIT_ELEVATOR:
-            RCLCPP_INFO(this->get_logger(), "電梯門開，準備進入...");
-            current_state_ = AmrState::ENTER_ELEVATOR;
-            break;
-
-        case AmrState::ENTER_ELEVATOR:
-            RCLCPP_INFO(this->get_logger(), "已進入電梯，觸發地圖切換程序...");
-            current_state_ = AmrState::CHANGE_FLOOR_MAP;
-            break;
-
-        case AmrState::CHANGE_FLOOR_MAP:
-            RCLCPP_INFO(this->get_logger(), "地圖切換完成，重新進入待機模式。");
-            current_state_ = AmrState::IDLE;
-            break;
+    std::string state_to_string(AmrState state) {
+        switch (state) {
+            case AmrState::WAIT_ELEVATOR:    return "WAIT_ELEVATOR";
+            case AmrState::NAV_TO_ELEVATOR:  return "NAV_TO_ELEVATOR";
+            case AmrState::CHANGE_FLOOR_MAP: return "CHANGE_FLOOR_MAP";
+            case AmrState::IDLE:             return "IDLE";
+            default:                         return "UNKNOWN";
+        }
     }
-}
+
+    void update_state() {
+        RCLCPP_INFO(this->get_logger(), "Current State: %s", state_to_string(current_state_).c_str());
+
+        switch (current_state_) {
+            case AmrState::WAIT_ELEVATOR:
+                RCLCPP_INFO(this->get_logger(), "[Action] Sending goal to elevator...");
+                send_nav_goal();
+                current_state_ = AmrState::NAV_TO_ELEVATOR;
+                break;
+
+            case AmrState::NAV_TO_ELEVATOR:
+                // Waiting for the action result callback.
+                break;
+
+            case AmrState::CHANGE_FLOOR_MAP:
+                // TODO: Trigger Service Client to load B1_map.yaml
+                RCLCPP_INFO(this->get_logger(), "Map switch logic goes here.");
+                current_state_ = AmrState::IDLE;
+                break;
+
+            case AmrState::IDLE:
+                break;
+        }
+    }
+
+    // --- Action Client Methods ---
+
+    void send_nav_goal() {
+        if (!nav_client_->wait_for_action_server(5s)) {
+            RCLCPP_ERROR(this->get_logger(), "Action server not available after waiting");
+            return;
+        }
+
+        auto goal_msg = NavigateToPose::Goal();
+        goal_msg.pose.header.frame_id = "map";
+        goal_msg.pose.header.stamp = this->now();
+        goal_msg.pose.pose.position.x = 2.7;
+        goal_msg.pose.pose.position.y = -7.6;
+        goal_msg.pose.pose.orientation.w = 1.0;
+
+        auto send_goal_options = rclcpp_action::Client<NavigateToPose>::SendGoalOptions();
+        
+        // Using Lambda for result callback instead of std::bind
+        send_goal_options.result_callback = 
+            [this](const GoalHandleNavigateToPose::WrappedResult & result) {
+                this->nav_result_callback(result);
+            };
+
+        nav_client_->async_send_goal(goal_msg, send_goal_options);
+    }
+
+    void nav_result_callback(const GoalHandleNavigateToPose::WrappedResult & result) {
+        switch (result.code) {
+            case rclcpp_action::ResultCode::SUCCEEDED:
+                RCLCPP_INFO(this->get_logger(), "Goal reached successfully!");
+                current_state_ = AmrState::CHANGE_FLOOR_MAP;
+                break;
+            case rclcpp_action::ResultCode::ABORTED:
+                RCLCPP_ERROR(this->get_logger(), "Goal was aborted");
+                current_state_ = AmrState::IDLE;
+                break;
+            case rclcpp_action::ResultCode::CANCELED:
+                RCLCPP_ERROR(this->get_logger(), "Goal was canceled");
+                current_state_ = AmrState::IDLE;
+                break;
+            default:
+                RCLCPP_ERROR(this->get_logger(), "Unknown result code");
+                current_state_ = AmrState::IDLE;
+                break;
+        }
+    }
+};
 
 int main(int argc, char **argv) {
     rclcpp::init(argc, argv);

@@ -10,7 +10,8 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
-
+find_package(rclcpp_action REQUIRED)  # 新增
+find_package(nav2_msgs REQUIRED)      # 新增
 
 # 1. 包含標頭檔的目錄
 include_directories(include)
@@ -23,6 +24,8 @@ ament_target_dependencies(state_machine_node
   rclcpp
   std_msgs
   geometry_msgs
+  rclcpp_action
+  nav2_msgs
 )
 
 # 4. 安裝設定：把執行檔放到 ROS 2 找得到的地方
