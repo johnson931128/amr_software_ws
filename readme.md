@@ -46,3 +46,53 @@
 ## 五、 下一步行動 (Next Steps)
 1. [ ] 執行 1F 樓層導航測試 (Nav2)：啟動導航系統，將電梯口座標寫入 `state_machine_node.cpp`，測試 AMR 是否能自主避障並精準抵達/觸發電梯等待邏輯。
 2. [ ] 建置 B1 樓層地圖：建立地下室模擬場景 (如 `B1_map.sdf`)，並執行 SLAM 建圖、影像後期修飾與存檔之完整標準作業流程。
+
+
+---
+
+# AMR 專案開發日誌 (2026-04-21)
+
+## 一、 專案執行進度 (Progress)
+1. [x] 成功修復路徑 Bug，實現一鍵啟動 (Gazebo + Nav2 + RViz2)。
+2. [x] 解決 WSLg 視窗凍結問題，恢復 GPU 硬體加速渲染。
+3. [x] 完成手動導航驗證：成功避開動態障礙物並抵達目標。
+4. [x] 實作 `state_machine_node.cpp` 並成功實現自動導航至電梯口。
+5. [x] 深入理解並撰寫 `state_machine_node.cpp` 語法大全：
+       - 已完成：include 區塊、public 初始化設定、private 屬性與 enum 轉字串。
+       - 已完成：主迴圈 `update_state` (Event-driven 狀態機機制)。
+       - 已完成：Action Client 非同步目標發送 `send_nav_goal` 與回呼綁定。
+       - 已完成：結案審查邏輯 `nav_result_callback` 與狀態轉移。
+6. [x] 完成 ROS 2 底層架構探索：
+       - 釐清 DDS 動態探索 (Dynamic Discovery) 與 ROS Graph 機制。
+       - 釐清四元數 (Quaternion) 在 2D 導航中的運作原理 ($w$ 與 $z$ 的關係)。
+
+## 二、 系統除錯紀錄 (Debugging)
+1. RViz2 視窗不可點擊與 CPU 100% 異常
+   - 原因：誤用軟體渲染 (LIBGL_ALWAYS_SOFTWARE) 導致 UI 執行緒餓死。
+   - 解法：清除 CPU 渲染限制，並強制使用 X11 協定 (xcb) 避開 Wayland Bug。
+
+## 三、 下一步行動 (Next Steps)
+1. 實作 `LoadMap` Service Client，實現抵達電梯後自動呼叫 Map Server 切換 `B1_map.yaml`。
+2. 整合「跨樓層導航」之全自動化測試。
+
+=========================================
+附錄：ROS 2 & WSLg 開發環境救命指令集
+=========================================
+
+1. 【強制清理】殺掉所有卡死或殘留的處理程序：
+   killall -9 rviz2 gazebo gz component_container_isolated parameter_bridge
+
+2. 【顯示修復】確保 RViz2 滑鼠可點擊且使用 GPU 渲染：
+   unset LIBGL_ALWAYS_SOFTWARE
+   export WAYLAND_DISPLAY=
+   export QT_QPA_PLATFORM=xcb
+
+3. 【手動定位】若介面卡死，從終端機強灌初始座標 (map -> odom)：
+   ros2 topic pub -1 /initialpose geometry_msgs/msg/PoseWithCovarianceStamped "{header: {frame_id: 'map'}, pose: {pose: {position: {x: 0.0, y: 0.0, z: 0.0}, orientation: {w: 1.0}}}}"
+
+4. 【定向編譯】只編譯本週開發的控制套件：
+   colcon build --packages-select amr_mission_control
+
+
+
+
