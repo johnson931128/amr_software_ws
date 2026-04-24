@@ -1,6 +1,7 @@
 #include "rclcpp/rclcpp.hpp"
-#include "rclcpp_action/rclcpp_action.hpp"       // 新增：Action 函式庫
-#include "nav2_msgs/action/navigate_to_pose.hpp" // 新增：Nav2 的 Action 型別
+#include "rclcpp_action/rclcpp_action.hpp"
+#include "nav2_msgs/action/navigate_to_pose.hpp"
+#include "nav2_msgs/srv/load_map.hpp"
 #include <chrono>
 #include <string>
 
@@ -15,16 +16,20 @@ enum class AmrState {
 
 class StateMachineNode : public rclcpp::Node {
 public:
-    // Define type aliases for cleaner code
     using NavigateToPose = nav2_msgs::action::NavigateToPose;
     using GoalHandleNavigateToPose = rclcpp_action::ClientGoalHandle<NavigateToPose>;
+    using LoadMap = nav2_msgs::srv::LoadMap;
 
     StateMachineNode() : Node("state_machine_node"), current_state_(AmrState::WAIT_ELEVATOR) {
-        RCLCPP_INFO(this->get_logger(), "State Machine Node initialized.");
+        RCLCPP_INFO(this->get_logger(), "AMR State Machine Brain Initialized.");
 
-        // Create the Action Client
+        // Initialize Action Client for Nav2
         nav_client_ = rclcpp_action::create_client<NavigateToPose>(this, "navigate_to_pose");
 
+        // Initialize Service Client for Map Server
+        map_client_ = this->create_client<LoadMap>("/map_server/load_map");
+
+        // Main Control Loop Timer
         timer_ = this->create_wall_timer(2s, [this]() {
             this->update_state();
         });
@@ -33,7 +38,8 @@ public:
 private:
     AmrState current_state_;
     rclcpp::TimerBase::SharedPtr timer_;
-    rclcpp_action::Client<NavigateToPose>::SharedPtr nav_client_; // Action Client pointer
+    rclcpp_action::Client<NavigateToPose>::SharedPtr nav_client_;
+    rclcpp::Client<LoadMap>::SharedPtr map_client_;
 
     std::string state_to_string(AmrState state) {
         switch (state) {
@@ -50,18 +56,16 @@ private:
 
         switch (current_state_) {
             case AmrState::WAIT_ELEVATOR:
-                RCLCPP_INFO(this->get_logger(), "[Action] Sending goal to elevator...");
                 send_nav_goal();
                 current_state_ = AmrState::NAV_TO_ELEVATOR;
                 break;
 
             case AmrState::NAV_TO_ELEVATOR:
-                // Waiting for the action result callback.
+                // Waiting for Action result callback
                 break;
 
             case AmrState::CHANGE_FLOOR_MAP:
-                // TODO: Trigger Service Client to load B1_map.yaml
-                RCLCPP_INFO(this->get_logger(), "Map switch logic goes here.");
+                switch_map("/home/fanshunjie/amr_ws/maps/B1_map.yaml");
                 current_state_ = AmrState::IDLE;
                 break;
 
@@ -70,11 +74,10 @@ private:
         }
     }
 
-    // --- Action Client Methods ---
-
+    // --- Action Client Logic ---
     void send_nav_goal() {
         if (!nav_client_->wait_for_action_server(5s)) {
-            RCLCPP_ERROR(this->get_logger(), "Action server not available after waiting");
+            RCLCPP_ERROR(this->get_logger(), "Nav2 Action server not available.");
             return;
         }
 
@@ -86,35 +89,38 @@ private:
         goal_msg.pose.pose.orientation.w = 1.0;
 
         auto send_goal_options = rclcpp_action::Client<NavigateToPose>::SendGoalOptions();
-        
-        // Using Lambda for result callback instead of std::bind
-        send_goal_options.result_callback = 
-            [this](const GoalHandleNavigateToPose::WrappedResult & result) {
-                this->nav_result_callback(result);
-            };
+        send_goal_options.result_callback = [this](const GoalHandleNavigateToPose::WrappedResult & result) {
+            if (result.code == rclcpp_action::ResultCode::SUCCEEDED) {
+                RCLCPP_INFO(this->get_logger(), "Arrived at elevator!");
+                this->current_state_ = AmrState::CHANGE_FLOOR_MAP;
+            } else {
+                RCLCPP_ERROR(this->get_logger(), "Navigation failed.");
+                this->current_state_ = AmrState::IDLE;
+            }
+        };
 
+        RCLCPP_INFO(this->get_logger(), "Sending navigation goal...");
         nav_client_->async_send_goal(goal_msg, send_goal_options);
     }
 
-    void nav_result_callback(const GoalHandleNavigateToPose::WrappedResult & result) {
-        switch (result.code) {
-            case rclcpp_action::ResultCode::SUCCEEDED:
-                RCLCPP_INFO(this->get_logger(), "Goal reached successfully!");
-                current_state_ = AmrState::CHANGE_FLOOR_MAP;
-                break;
-            case rclcpp_action::ResultCode::ABORTED:
-                RCLCPP_ERROR(this->get_logger(), "Goal was aborted");
-                current_state_ = AmrState::IDLE;
-                break;
-            case rclcpp_action::ResultCode::CANCELED:
-                RCLCPP_ERROR(this->get_logger(), "Goal was canceled");
-                current_state_ = AmrState::IDLE;
-                break;
-            default:
-                RCLCPP_ERROR(this->get_logger(), "Unknown result code");
-                current_state_ = AmrState::IDLE;
-                break;
+    // --- Service Client Logic ---
+    void switch_map(const std::string & map_path) {
+        if (!map_client_->wait_for_service(5s)) {
+            RCLCPP_ERROR(this->get_logger(), "Map load service not available.");
+            return;
         }
+
+        auto request = std::make_shared<LoadMap::Request>();
+        request->map_url = map_path;
+
+        map_client_->async_send_request(request, [this](rclcpp::Client<LoadMap>::SharedFuture future) {
+            auto response = future.get();
+            if (response->result == LoadMap::Response::RESULT_SUCCESS) {
+                RCLCPP_INFO(this->get_logger(), "B1 Map Loaded Successfully!");
+            } else {
+                RCLCPP_ERROR(this->get_logger(), "Failed to load B1 Map.");
+            }
+        });
     }
 };
 

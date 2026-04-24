@@ -1,4 +1,4 @@
-image: b1_map.png
+image: B1_map.png
 mode: trinary
 resolution: 0.050
 origin: [-4.574, -10.732, 0] # 請確保這行與 1f_map.yaml 相同

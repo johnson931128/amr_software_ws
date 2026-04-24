@@ -156,7 +156,7 @@ Visualization Manager:
       Name: LaserScan
       Position Transformer: XYZ
       Selectable: true
-      Size (Pixels): 3
+      Size (Pixels): 20
       Size (m): 0.009999999776482582
       Style: Flat Squares
       Topic:
@@ -355,5 +355,5 @@ Window Geometry:
   Views:
     collapsed: false
   Width: 1889
-  X: 398
-  Y: 8
+  X: 366
+  Y: -24
