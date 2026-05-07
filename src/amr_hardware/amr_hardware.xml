@@ -1,0 +1,9 @@
+<library path="amr_hardware">
+  <class name="amr_hardware/AmrSystemHardware"
+         type="amr_hardware::AmrSystemHardware"
+         base_class_type="hardware_interface::SystemInterface">
+    <description>
+      AMR HAL use to communition with ESP32 by Serial。
+    </description>
+  </class>
+</library>
