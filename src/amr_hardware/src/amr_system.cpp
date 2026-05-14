@@ -1,4 +1,4 @@
-i#include "amr_hardware/amr_system.hpp"
+#include "amr_hardware/amr_system.hpp"
 #include "hardware_interface/types/hardware_interface_type_values.hpp"
 #include "rclcpp/rclcpp.hpp"
 
